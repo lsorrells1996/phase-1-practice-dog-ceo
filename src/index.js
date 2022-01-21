@@ -2,50 +2,44 @@ console.log('%c HI', 'color: firebrick')
 
 const imgUrl = "https://dog.ceo/api/breeds/image/random/4"
 
-function getImagesFromServer(url) {
-    return fetch(imgUrl)
+fetch(imgUrl)
         .then(r => r.json())
-        .then(obj => obj.message)
-}
-// get rid of the chunk if it doesnt work 
-// fetch(imgUrl).then(r => r.json()).then(obj => obj.message[0])
+        .then(obj => {
+            obj.message.forEach(imgUrl => {
+
+                const newImg = document.createElement('img')
+
+                newImg.src = imgUrl
+
+                const imgContainer = document.querySelector('#dog-image-container')
+                imgContainer.append(newImg)
+            })
+        })
 
 
-function putImgToDOM(arrayImgURLS){
-    let placeForImgs = document.querySelector('#dog-image-container')
+const breedUrl = 'https://dog.ceo/api/breeds/list/all'
+
+fetch(breedUrl)
+    .then(r => r.json())
+    .then( (m) => {
+        // the promise returns an object so we need to turn the object into an array with 'Object.keys'. Then we can iterate throught the data
+        const breedArray = Object.keys(m.message)
+        // we dont need to assign dogList for every iteration of the array so we can define dogList outside of the forEach loop
+        const dogList = document.querySelector('#dog-breeds')
+
+        breedArray.forEach(string => {
 
 
-    let imageItem = document.createElement('img');
-        imageItem.src = arrayImgURLS.message[0];
-        placeForImgs.appendChild(imageItem);
+            const addDogs = document.createElement('li')
 
-    // arrayImgURLS.forEach(sURL => {
-    //     let imageItem = document.createElement('img');
-    //     imageItem.createAttribute('src').value = sURL;
-    //     placeForImgs.appendChild(imageItem)
-    // });
+            addDogs.textContent = string 
 
+            addDogs.addEventListener('click', () => {
+                addDogs.style.color = 'red'
+            })
+            
+            dogList.append(addDogs)
+        })
+    } )
 
-    
-}
-
-console.log(getImagesFromServer(imgUrl)[0]);
-
-
-//works fine
-// let placeForImgs = document.getElementById('dog-image-container')
-// let sometext = document.createElement('h1');
-// sometext.textContent = "blablabla";
-// placeForImgs.appendChild(sometext);
-
-
-// works fine 
-// let  imgItem = new Image();
-// imgItem.src="https://images.dog.ceo/breeds/puggle/IMG_080306.jpg";
-// placeForImgs.appendChild(imgItem);
-
-  // To pass the tests, don't forget to return your fetch!
-  // let resp = fetch('https://anapioficeandfire.com/api/books')
-  //   .then(r => r.json())
-  //   .then(sObj => sObj.map(book => book.name));
 
